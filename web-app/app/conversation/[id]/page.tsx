@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Conversation from '@/app/components/conversation';
 
 interface Message {
   id: string;
@@ -63,31 +64,8 @@ export default function ConversationDetail() {
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${
-              message.role === 'user' ? 'justify-end' : 'justify-start'
-            }`}
-          >
-            <div
-              className={`max-w-[70%] rounded-lg p-4 ${
-                message.role === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800'
-              }`}
-            >
-              <p className="whitespace-pre-wrap">{message.content}</p>
-              <span className="text-xs opacity-70 mt-2 block">
-                {new Date(message.timestamp).toLocaleTimeString()}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
+      <Conversation messages={messages} isLoading={isLoading} />
+      
       {/* Message Input */}
       <form onSubmit={handleSendMessage} className="p-4 border-t dark:border-gray-700">
         <div className="flex gap-4">
