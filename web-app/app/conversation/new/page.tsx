@@ -22,9 +22,7 @@ export default function NewConversation() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    console.log(conversation)
     const currentStage = conversation.at(-1)?.stage || '1';
-    const id = conversation.at(-1)?.id ;
 
     setIsLoading(true);
     try {
@@ -33,7 +31,7 @@ export default function NewConversation() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: input, stage: currentStage, id: id }),
+        body: JSON.stringify({ content: input, stage: currentStage }),
       });
 
       if (!response.ok) {
@@ -54,8 +52,6 @@ export default function NewConversation() {
   };
 
   const isActive = conversation.at(-1)?.status === 'active';
-
-  console.log('Conversation:', conversation);
 
   return (
     <div className="h-screen flex flex-col">

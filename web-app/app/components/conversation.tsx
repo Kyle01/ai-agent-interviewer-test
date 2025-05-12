@@ -30,7 +30,7 @@ export default function Conversation({ messages, isLoading = false }: Conversati
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((message) => (
           <div
-            key={message.id}
+            key={`${Math.random() * 1000} - ${message.id}`}
             className={`flex ${
               message.role === 'user' ? 'justify-end' : 'justify-start'
             }`}

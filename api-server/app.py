@@ -1,7 +1,7 @@
 import os
 import psycopg2
 from flask import Flask, jsonify, request
-from conversation_handler import handle_conversation, conversations
+from conversation_handler import handle_conversation
 
 app = Flask(__name__)
 
@@ -27,24 +27,26 @@ def get_conversations():
         FROM conversations
     """
     cur.execute(query)
-    conversations = cur.fetchall()
+    results = []
+    for row in cur:
+        conversation = {
+            "id": row[0],
+            "name": row[1],
+            "position": row[2],
+            "salary": row[3],
+            "has_agreed_to_upper_salary_range": row[4],
+            "registration_number": row[5],
+            "registration_state": row[6],
+            "expected_registration_date": row[7],
+            "has_two_years_experience": row[8],
+            "experience_description": row[9],
+        }
+        results.append(conversation)
+
     cur.close()
     conn.close()
-    return jsonify(conversations)
+    return jsonify(results)
 
-@app.route('/api/conversation/<conversation_id>', methods=['GET'])
-def get_conversation(conversation_id):
-    if conversation_id not in conversations:
-        return jsonify({
-            'error': 'Conversation not found',
-            'status': 'error'
-        }), 404
-    
-    return jsonify({
-        'id': conversation_id,
-        'messages': conversations[conversation_id],
-        'status': 'success'
-    })
 
 @app.route('/api/conversation', methods=['POST'])
 @app.route('/api/conversation/<conversation_id>', methods=['POST'])

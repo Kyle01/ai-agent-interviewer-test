@@ -27,9 +27,7 @@ export default function ConversationLayout({
       try {
         const response = await fetch('/api/conversations');
         const data = await response.json();
-        if (data.status === 'success') {
-          setConversations(data.conversations);
-        }
+          setConversations(data);
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
@@ -38,24 +36,10 @@ export default function ConversationLayout({
     fetchConversations();
   }, []);
   
-  console.log(conversations)
-
   return (
     <div className="flex min-h-screen">
       {/* Left Panel */}
       <div className="w-[300px] border-r border-black/[.08] dark:border-white/[.145] p-6 flex flex-col gap-6">
-        <div className="flex items-center gap-2">
-          <Link href="/">
-            <Image
-              className="dark:invert"
-              src="/next.svg"
-              alt="Next.js logo"
-              width={120}
-              height={25}
-              priority
-            />
-          </Link>
-        </div>
         
         <nav className="flex flex-col gap-2">
           <Link
@@ -91,14 +75,7 @@ export default function ConversationLayout({
               href={`/conversation/${conversation.id}`}
               className="flex items-center gap-2 hover:underline hover:underline-offset-4"
             >
-              <Image
-                aria-hidden
-                src="/message.svg"
-                alt="Message icon"
-                width={16}
-                height={16}
-              />
-              {conversation.messages[0]?.content.slice(0, 20)}...
+              {conversation?.id.slice(0, 20)}...
             </Link>
           ))}
           <div className="h-px bg-gray-200 dark:bg-gray-700 my-2" />
