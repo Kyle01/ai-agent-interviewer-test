@@ -15,7 +15,7 @@ cur.execute('DROP TABLE IF EXISTS candidate_applications;')
 cur.execute('CREATE TABLE candidate_applications (id uuid PRIMARY KEY,'
                                  'status varchar,'
                                  'candidate_name varchar,'
-                                 'desiired_position varchar,'
+                                 'desired_position varchar,'
                                  'desired_salary integer,'
                                  'has_agreed_to_upper_salary_range boolean,'
                                  'registration_number varchar,'
@@ -30,3 +30,4 @@ conn.commit()
 
 cur.close()
 conn.close()
+

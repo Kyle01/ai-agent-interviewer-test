@@ -1,7 +1,8 @@
 from flask import jsonify
 from datetime import datetime
 import uuid
-from database_interactions import create_conversation, fetch_conversation
+from database_interactions import create_conversation
+from ai_bots import interviewer_bot
 
 
 # In-memory storage for conversations
@@ -26,23 +27,7 @@ def handle_conversation(conversation_id=None, request=None):
 
     # If no conversation_id provided, create new conversation
     if not conversation_id:
-        initial_message = {
-            'content': 'Hello! How can I help you today?',
-            'role': 'assistant',
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        ai_response = {
-            'content': 'This is a placeholder AI response. Implement actual AI logic here.',
-            'role': 'assistant',
-            'timestamp': datetime.utcnow().isoformat(),
-        }
-        
-        conversation_id = create_conversation([initial_message, new_message, ai_response])
-        
-        return jsonify({
-            'id': conversation_id,
-            'status': 'success'
-        })
+        return handle_new_conversation(new_message)
     
     # If conversation_id provided, append to existing conversation
     if conversation_id not in conversations:
@@ -70,3 +55,23 @@ def handle_conversation(conversation_id=None, request=None):
         'messages': conversations[conversation_id],
         'status': 'success'
     }) 
+
+def handle_new_conversation(new_message):
+    initial_message = {
+        'content': 'Hello! How can I help you today?',
+        'role': 'assistant',
+        'timestamp': datetime.utcnow().isoformat()
+    }
+
+    current_conversation = [initial_message, new_message]
+
+    bot_resp = interviewer_bot(current_conversation, {})
+
+    print(bot_resp)
+
+    conversation_id = create_conversation([initial_message, new_message])
+    
+    return jsonify({
+        'id': conversation_id,
+        'status': 'success'
+    })
