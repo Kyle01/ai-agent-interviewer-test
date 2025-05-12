@@ -32,10 +32,6 @@ export default function ConversationDetail() {
     fetchConversation();
   }, [params.id]);
 
-  console.log('Candidate Profile:', candidateProfile);
-  console.log('Status:', status);
-  console.log('Messages:', messages);
-
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
@@ -48,7 +44,7 @@ export default function ConversationDetail() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: newMessage }),
+        body: JSON.stringify({ content: newMessage, id: params.id }),
       });
 
       if (!response.ok) {
@@ -56,6 +52,7 @@ export default function ConversationDetail() {
       }
 
       const data = await response.json();
+      console.log(data);
       setMessages(data.messages || []);
       setStatus(data.status || CandidateProfileStatus.IN_PROGRESS);
       setCandidateProfile(data.candidateProfile || null);
@@ -65,6 +62,8 @@ export default function ConversationDetail() {
       setIsLoading(false);
     }
   };
+
+  console.log(messages)
 
   return (
     <div className="h-screen flex flex-col">
@@ -83,8 +82,8 @@ export default function ConversationDetail() {
           />
           <button
             type="submit"
-            disabled={isLoading || !newMessage.trim()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={isLoading || !newMessage.trim() || status === CandidateProfileStatus.COMPLETED || status === CandidateProfileStatus.REJECTED}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             {isLoading ? 'Sending...' : 'Send'}
           </button>

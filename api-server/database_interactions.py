@@ -14,7 +14,7 @@ def get_db_connection():
     conn = psycopg2.connect(DB_CONNECTION_URL)
     return conn
 
-def fetch_conversation(conversation_id):
+def fetch_candidate_details(conversation_id):
     conn = get_db_connection()
     cur = conn.cursor()
     query = """
@@ -51,30 +51,30 @@ def fetch_conversation(conversation_id):
         'messages': messages
     })
 
-def create_conversation(messages):
+def create_conversation(messages, name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status):
     id = str(uuid.uuid4())
     conn = get_db_connection()
     cur = conn.cursor()
     query = """
-        INSERT INTO candidate_applications (id, conversation)
-        VALUES (%s, %s)
+        INSERT INTO candidate_applications (id, conversation, candidate_name, desired_position, desired_salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING id
     """
-    cur.execute(query, (id, json.dumps(messages)))
+    cur.execute(query, (id, json.dumps(messages), name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status))
     conn.commit()
     cur.close()
     conn.close()
     return id
 
-def save_conversation(conversation_id, name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description):
+def save_conversation(conversation_id, name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status):
     conn = get_db_connection()
     cur = conn.cursor()
     query = """
         UPDATE candidate_applications
-        SET candidate_name = %s, desired_position = %s, desired_salary = %s, has_agreed_to_upper_salary_range = %s, registration_number = %s, registration_state = %s, expected_registration_date = %s, has_two_years_experience = %s, experience_description = %s
+        SET candidate_name = %s, desired_position = %s, desired_salary = %s, has_agreed_to_upper_salary_range = %s, registration_number = %s, registration_state = %s, expected_registration_date = %s, has_two_years_experience = %s, experience_description = %s, status = %s
         WHERE id = %s
     """
-    cur.execute(query, (name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, conversation_id))
+    cur.execute(query, (name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status, conversation_id))
     conn.commit()
     cur.close()
     conn.close()

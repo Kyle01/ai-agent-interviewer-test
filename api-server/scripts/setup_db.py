@@ -9,19 +9,17 @@ conn = psycopg2.connect(DB_CONNECTION_URL)
 
 cur = conn.cursor()
 
-cur.execute('DROP TABLE IF EXISTS conversations;')
-
 cur.execute('DROP TABLE IF EXISTS candidate_applications;')
 cur.execute('CREATE TABLE candidate_applications (id uuid PRIMARY KEY,'
                                  'status varchar,'
                                  'candidate_name varchar,'
                                  'desired_position varchar,'
-                                 'desired_salary integer,'
-                                 'has_agreed_to_upper_salary_range boolean,'
+                                 'desired_salary varchar,'
+                                 'has_agreed_to_upper_salary_range varchar,'
                                  'registration_number varchar,'
                                  'registration_state varchar,'
                                  'expected_registration_date varchar,'
-                                 'has_two_years_experience boolean,'
+                                 'has_two_years_experience varchar,'
                                  'conversation jsonb,'
                                  'experience_description varchar);'
                                  )

@@ -8,7 +8,7 @@ import { Message } from '@/app/types';
 const defaultConversation: Message[] = [{
   role: 'assistant',
   content: 'Hello! Are you currently open to discussing this role?',
-  timestamp: '2021-01-01 12:00:00',
+  timestamp: new Date().toISOString(),
 }]
 
 export default function NewConversation() {
@@ -16,7 +16,7 @@ export default function NewConversation() {
   const [conversation, setConversation] = useState<Array<Message>>(defaultConversation);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
-
+x
   const handleSubmitResponse = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
