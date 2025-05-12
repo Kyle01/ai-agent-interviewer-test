@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, request
 from conversation_handler import handle_conversation, conversations
-from datetime import datetime
-import uuid
 
 app = Flask(__name__)
 
@@ -29,7 +27,7 @@ def get_conversation(conversation_id):
 @app.route('/api/conversation', methods=['POST'])
 @app.route('/api/conversation/<conversation_id>', methods=['POST'])
 def conversation_route(conversation_id=None):
-    return handle_conversation(conversation_id)
+    return handle_conversation(conversation_id, request)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000) 

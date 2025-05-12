@@ -6,7 +6,7 @@ import Conversation from '@/app/components/conversation';
 
 const defaultConversation = [{
   role: 'assistant',
-  content: 'Hello, how can I help you today?',
+  content: 'Hello! Are you currently open to discussing this role?',
   id: '1',
   timestamp: '2021-01-01 12:00:00'
 }]
@@ -28,7 +28,7 @@ export default function NewConversation() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: input }),
+        body: JSON.stringify({ content: input, stage: '1' }),
       });
 
       if (!response.ok) {

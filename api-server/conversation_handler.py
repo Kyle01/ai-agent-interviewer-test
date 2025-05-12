@@ -1,11 +1,12 @@
-from flask import jsonify, request
+from flask import jsonify
 from datetime import datetime
 import uuid
+from stage_manager import response_stage_1
 
 # In-memory storage for conversations
 conversations = {}
 
-def handle_conversation(conversation_id=None):
+def handle_conversation(conversation_id=None, request=None):
     data = request.get_json()
     if not data or 'content' not in data:
         return jsonify({
@@ -14,11 +15,14 @@ def handle_conversation(conversation_id=None):
         }), 400
 
     # Create new message
+    content = data['content']
     new_message = {
         'id': str(uuid.uuid4()),
-        'content': data['content'],
+        'content': content,
         'role': 'user',
-        'timestamp': datetime.utcnow().isoformat()
+        'timestamp': datetime.utcnow().isoformat(),
+        'status': 'active',
+        'stage': data['stage']
     }
 
     # If no conversation_id provided, create new conversation
@@ -32,14 +36,8 @@ def handle_conversation(conversation_id=None):
         }
         conversations[conversation_id] = [initial_message, new_message]
         
-        # Generate AI response for new conversation
-        ai_response = {
-            'id': str(uuid.uuid4()),
-            'content': 'This is a placeholder AI response. Implement actual AI logic here.',
-            'role': 'assistant',
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        conversations[conversation_id].append(ai_response)
+        response = response_stage_1(content)
+        conversations[conversation_id].append(response)
         
         return jsonify({
             'id': conversation_id,
@@ -54,17 +52,10 @@ def handle_conversation(conversation_id=None):
             'status': 'error'
         }), 404
     
-    # Add message to conversation
-    conversations[conversation_id].append(new_message)
-    
-    # Generate AI response
-    ai_response = {
-        'id': str(uuid.uuid4()),
-        'content': 'This is a placeholder AI response. Implement actual AI logic here.',
-        'role': 'assistant',
-        'timestamp': datetime.utcnow().isoformat()
-    }
-    conversations[conversation_id].append(ai_response)
+    if conversations[conversation_id][-1]['stage'] == '1':
+        response = response_stage_1(content)
+        conversations[conversation_id].append(response)
+
     
     return jsonify({
         'id': conversation_id,
