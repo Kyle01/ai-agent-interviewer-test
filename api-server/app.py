@@ -2,6 +2,7 @@ import os
 import psycopg2
 from flask import Flask, jsonify, request
 from conversation_handler import handle_conversation
+from database_interactions import fetch_conversation
 
 app = Flask(__name__)
 
@@ -24,7 +25,7 @@ def get_conversations():
     cur = conn.cursor()
     query = """
         SELECT *
-        FROM conversations
+        FROM candidate_applications 
     """
     cur.execute(query)
     results = []
@@ -47,6 +48,15 @@ def get_conversations():
     conn.close()
     return jsonify(results)
 
+@app.route('/api/conversations/<conversation_id>', methods=['GET'])
+def get_conversation(conversation_id):
+    conversation = fetch_conversation(conversation_id)
+    if not conversation:
+        return jsonify({
+            'error': 'Conversation not found',
+            'status': 'error'
+        }), 404
+    return conversation
 
 @app.route('/api/conversation', methods=['POST'])
 @app.route('/api/conversation/<conversation_id>', methods=['POST'])

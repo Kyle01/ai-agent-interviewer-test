@@ -2,27 +2,24 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Conversation, { ConversationType } from '@/app/components/conversation';
+import Conversation from '@/app/components/conversation';
+import { Message } from '@/app/types';
 
-const defaultConversation = [{
+const defaultConversation: Message[] = [{
   role: 'assistant',
   content: 'Hello! Are you currently open to discussing this role?',
   timestamp: '2021-01-01 12:00:00',
-  status: 'active',
-  stage: '1',
 }]
 
 export default function NewConversation() {
   const router = useRouter();
-  const [conversation, setConversation] = useState<Array<ConversationType>>(defaultConversation);
+  const [conversation, setConversation] = useState<Array<Message>>(defaultConversation);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
   const handleSubmitResponse = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
-    const currentStage = conversation.at(-1)?.stage || '1';
 
     setIsLoading(true);
     try {
@@ -31,7 +28,7 @@ export default function NewConversation() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: input, stage: currentStage }),
+        body: JSON.stringify({ content: input }),
       });
 
       if (!response.ok) {
@@ -42,16 +39,13 @@ export default function NewConversation() {
       setConversation(data.messages);
       setInput('');
       
-      // Redirect to the conversation page with the new ID
-      // router.push(`/conversation/${data.id}`);
+      router.push(`/conversation/${data.id}`);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
       setIsLoading(false);
     }
   };
-
-  const isActive = conversation.at(-1)?.status === 'active';
 
   return (
     <div className="h-screen flex flex-col">
@@ -71,7 +65,7 @@ export default function NewConversation() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
               className="flex-1 p-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading || !isActive}
+              disabled={isLoading}
             />
             <button
               type="submit"

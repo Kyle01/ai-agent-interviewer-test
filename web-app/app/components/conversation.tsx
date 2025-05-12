@@ -1,18 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from 'react';
-
-export interface ConversationType {
-  id?: string;
-  content: string;
-  role: string;
-  timestamp: string;
-  stage: string;
-  status: string;
-}
+import { Message } from '../types';
 
 interface ConversationProps {
-  messages: ConversationType[];
+  messages: Message[];
   isLoading?: boolean;
 }
 
@@ -28,9 +20,9 @@ export default function Conversation({ messages, isLoading = false }: Conversati
     <div className="flex flex-col h-full">
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.map((message) => (
+        {messages?.map((message, i) => (
           <div
-            key={`${Math.random() * 1000} - ${message.id}`}
+            key={`message - ${i}`}
             className={`flex ${
               message.role === 'user' ? 'justify-end' : 'justify-start'
             }`}
@@ -43,9 +35,9 @@ export default function Conversation({ messages, isLoading = false }: Conversati
               }`}
             >
               <p className="whitespace-pre-wrap">{message.content}</p>
-              <span className="text-xs opacity-70 mt-2 block">
+             {message.timestamp && <span className="text-xs opacity-70 mt-2 block">
                 {new Date(message.timestamp).toLocaleTimeString()}
-              </span>
+              </span>}
             </div>
           </div>
         ))}

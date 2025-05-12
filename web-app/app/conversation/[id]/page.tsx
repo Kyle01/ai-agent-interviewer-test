@@ -3,16 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Conversation from '@/app/components/conversation';
-
-interface Message {
-  id: string;
-  content: string;
-  role: 'user' | 'assistant';
-  timestamp: string;
-}
+import { Message, CandidateProfile, CandidateProfileStatus } from '@/app/types';
 
 export default function ConversationDetail() {
   const params = useParams();
+  const [candidateProfile, setCandidateProfile] = useState<CandidateProfile | null>(null);
+  const [status, setStatus] = useState<CandidateProfileStatus>(CandidateProfileStatus.IN_PROGRESS);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -20,12 +16,14 @@ export default function ConversationDetail() {
   useEffect(() => {
     const fetchConversation = async () => {
       try {
-        const response = await fetch(`/api/conversation/${params.id}`);
+        const response = await fetch(`/api/conversations/${params.id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch conversation');
         }
         const data = await response.json();
         setMessages(data.messages || []);
+        setStatus(data.status || CandidateProfileStatus.IN_PROGRESS);
+        setCandidateProfile(data.candidateProfile || null);
       } catch (error) {
         console.error('Error fetching conversation:', error);
       }
@@ -34,13 +32,18 @@ export default function ConversationDetail() {
     fetchConversation();
   }, [params.id]);
 
+  console.log('Candidate Profile:', candidateProfile);
+  console.log('Status:', status);
+  console.log('Messages:', messages);
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
+    setMessages(prev => [...prev, ({ content: newMessage, role: 'user' })]);
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/conversation/${params.id}/message`, {
+      const response = await fetch(`/api/conversations/${params.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,8 +56,9 @@ export default function ConversationDetail() {
       }
 
       const data = await response.json();
-      setMessages(prev => [...prev, data]);
-      setNewMessage('');
+      setMessages(data.messages || []);
+      setStatus(data.status || CandidateProfileStatus.IN_PROGRESS);
+      setCandidateProfile(data.candidateProfile || null);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
