@@ -1,7 +1,7 @@
 from flask import jsonify
 from datetime import datetime
 import uuid
-from stage_manager import response_stage_1
+from stage_manager import response_stage_1, response_stage_2
 
 # In-memory storage for conversations
 conversations = {}
@@ -30,7 +30,7 @@ def handle_conversation(conversation_id=None, request=None):
         conversation_id = str(uuid.uuid4())
         initial_message = {
             'id': str(uuid.uuid4()),
-            'content': 'Hello! How can I help you today?',
+            'content': 'Hello! Are you currently open to discussing this role?',
             'role': 'assistant',
             'timestamp': datetime.utcnow().isoformat()
         }
@@ -54,6 +54,9 @@ def handle_conversation(conversation_id=None, request=None):
     
     if conversations[conversation_id][-1]['stage'] == '1':
         response = response_stage_1(content)
+        conversations[conversation_id].append(response)
+    elif conversations[conversation_id][-1]['stage'] == '2':
+        response = response_stage_2(content)
         conversations[conversation_id].append(response)
 
     

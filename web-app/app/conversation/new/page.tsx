@@ -2,12 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Conversation from '@/app/components/conversation';
+import Conversation, { ConversationType } from '@/app/components/conversation';
 
 const defaultConversation = [{
   role: 'assistant',
   content: 'Hello! Are you currently open to discussing this role?',
-  id: '1',
   timestamp: '2021-01-01 12:00:00',
   status: 'active',
   stage: '1',
@@ -15,13 +14,17 @@ const defaultConversation = [{
 
 export default function NewConversation() {
   const router = useRouter();
-  const [conversation, setConversation] = useState(defaultConversation);
+  const [conversation, setConversation] = useState<Array<ConversationType>>(defaultConversation);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
 
   const handleSubmitResponse = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
+
+    console.log(conversation)
+    const currentStage = conversation.at(-1)?.stage || '1';
+    const id = conversation.at(-1)?.id ;
 
     setIsLoading(true);
     try {
@@ -30,7 +33,7 @@ export default function NewConversation() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: input, stage: '1' }),
+        body: JSON.stringify({ content: input, stage: currentStage, id: id }),
       });
 
       if (!response.ok) {
@@ -51,6 +54,8 @@ export default function NewConversation() {
   };
 
   const isActive = conversation.at(-1)?.status === 'active';
+
+  console.log('Conversation:', conversation);
 
   return (
     <div className="h-screen flex flex-col">

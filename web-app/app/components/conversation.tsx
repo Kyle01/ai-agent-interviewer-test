@@ -2,15 +2,17 @@
 
 import { useEffect, useRef } from 'react';
 
-interface Message {
-  id: string;
+export interface ConversationType {
+  id?: string;
   content: string;
   role: string;
   timestamp: string;
+  stage: string;
+  status: string;
 }
 
 interface ConversationProps {
-  messages: Message[];
+  messages: ConversationType[];
   isLoading?: boolean;
 }
 
