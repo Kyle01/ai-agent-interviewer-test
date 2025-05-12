@@ -8,7 +8,9 @@ const defaultConversation = [{
   role: 'assistant',
   content: 'Hello! Are you currently open to discussing this role?',
   id: '1',
-  timestamp: '2021-01-01 12:00:00'
+  timestamp: '2021-01-01 12:00:00',
+  status: 'active',
+  stage: '1',
 }]
 
 export default function NewConversation() {
@@ -48,6 +50,8 @@ export default function NewConversation() {
     }
   };
 
+  const isActive = conversation.at(-1)?.status === 'active';
+
   return (
     <div className="h-screen flex flex-col">
       <div className="flex-1 p-8">
@@ -66,7 +70,7 @@ export default function NewConversation() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
               className="flex-1 p-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
+              disabled={isLoading || !isActive}
             />
             <button
               type="submit"
