@@ -48,7 +48,15 @@ export default function NewConversation() {
       setConversation(data.messages || []);
       setInput('');
       
-      router.push(`/conversation/${data.id}`);
+      // Pass the initial data through URL search params
+      const searchParams = new URLSearchParams();
+      searchParams.set('initialData', JSON.stringify({
+        messages: data.messages,
+        status: data.status,
+        candidateProfile: data.candidate_profile
+      }));
+      
+      router.push(`/conversation/${data.id}?${searchParams.toString()}`);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -59,14 +67,14 @@ export default function NewConversation() {
   return (
     <div className="h-screen flex flex-col">
       <div className="flex-1 p-8">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <Conversation messages={conversation} isLoading={isLoading} />
         </div>
       </div>
 
       {/* Input Form */}
       <form onSubmit={handleSubmitResponse} className="p-4 border-t dark:border-gray-700">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div className="flex gap-4">
             <input
               type="text"

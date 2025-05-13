@@ -19,7 +19,7 @@ export default function Conversation({ messages, isLoading = false }: Conversati
   return (
     <div className="flex flex-col h-full">
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto space-y-4">
         {messages?.map((message, i) => (
           <div
             key={`message - ${i}`}

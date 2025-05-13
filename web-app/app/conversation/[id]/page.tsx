@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import Conversation from '@/app/components/conversation';
 import { Message, CandidateProfile, CandidateProfileStatus } from '@/app/types';
 import { cannedRejectionMessage, cannedAcceptanceMessage } from '@/app/constants';
 
 export default function ConversationDetail() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const [candidateProfile, setCandidateProfile] = useState<CandidateProfile | null>(null);
   const [status, setStatus] = useState<CandidateProfileStatus>(CandidateProfileStatus.IN_PROGRESS);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,6 +17,20 @@ export default function ConversationDetail() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // Check if we have initial data from search params
+    const initialDataParam = searchParams.get('initialData');
+    if (initialDataParam) {
+      try {
+        const initialData = JSON.parse(initialDataParam);
+        setStatus(initialData.status || CandidateProfileStatus.IN_PROGRESS);
+        setMessages(initialData.messages || []);
+        setCandidateProfile(initialData.candidateProfile || null);
+        return;
+      } catch (error) {
+        console.error('Error parsing initial data:', error);
+      }
+    }
+
     const fetchConversation = async () => {
       try {
         const response = await fetch(`/api/conversations/${params.id}`);
@@ -69,6 +84,9 @@ export default function ConversationDetail() {
       }
       setStatus(data.status || CandidateProfileStatus.IN_PROGRESS);
       setCandidateProfile(data.candidate_profile || null);
+      
+      // Dispatch event to trigger conversation list refresh
+      window.dispatchEvent(new Event('conversation-updated'));
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -78,33 +96,39 @@ export default function ConversationDetail() {
 
   return (
     <div className="h-screen flex flex-col">
-      <Conversation messages={messages} isLoading={isLoading} />
+      <div className="flex-1 p-8">
+        <div className="max-w-3xl mx-auto">
+          <Conversation messages={messages} isLoading={isLoading} />
+        </div>
+      </div>
       
       {/* Message Input */}
-      <form onSubmit={handleSendMessage} className="p-4 border-t dark:border-gray-700">
-        <div className="flex gap-4">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-1 p-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !newMessage.trim() || status === CandidateProfileStatus.COMPLETED || status === CandidateProfileStatus.REJECTED}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-          >
-            {isLoading ? 'Sending...' : 'Send'}
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowModal(true)}
-            className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors cursor-pointer"
-          >
-            Show Data
-          </button>
+      <form onSubmit={handleSendMessage} className="p-2 border-t dark:border-gray-700">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex gap-4">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
+              className="flex-1 p-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !newMessage.trim() || status === CandidateProfileStatus.COMPLETED || status === CandidateProfileStatus.REJECTED}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              {isLoading ? 'Sending...' : 'Send'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
+              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors cursor-pointer"
+            >
+              Show Data
+            </button>
+          </div>
         </div>
       </form>
 
