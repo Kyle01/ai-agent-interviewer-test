@@ -1,0 +1,2 @@
+export const cannedRejectionMessage = "Thank you for your interest in our company. This isn't a good fit at this time."
+export const cannedAcceptanceMessage = "Thank you for completing the application. We'll be in touch soon."

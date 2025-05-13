@@ -4,9 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Conversation from '@/app/components/conversation';
 import { Message, CandidateProfile, CandidateProfileStatus } from '@/app/types';
-
-export const cannedRejectionMessage = "Thank you for your interest in our company. This isn't a good fit at this time."
-export const cannedAcceptanceMessage = "Thank you for completing the application. We'll be in touch soon."
+import { cannedRejectionMessage, cannedAcceptanceMessage } from '@/app/constants';
 
 export default function ConversationDetail() {
   const params = useParams();
