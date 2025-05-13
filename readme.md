@@ -32,11 +32,10 @@ python app.py
 ```
 6. The server will start at `http://localhost:5000`
 
-
 # Deployment 
 The frontend is a NextJS app deployed in [Vercel](https://vercel.com/). The backend is a Flask App and Deployed in [Render](https://render.com/). The Database is in Postgres and deployed in Render. All the code is in this repo on github and deploys automatically once merged into the main branch
 
 # Follow up items:
 1. For simplicity I made the `candidate_applications` SQL table variables all strings. This was to capture the data entered from the users in the 'raw' and allow maximum flexibility. In an ideal world we would have a second table with the data better transformed into correct types, such as boolean for fields like `has_two_years_experience`. 
 2. I didn't use an ORM and already regret it. If I did this over I would lean more on a Python ORM or do the entire thing in Typescript. 
-3. I had some trouble with the OpenAI bot- in particular the bot really struggled with the giving a final conversation once the agent has decided to reject the candidate. I.e. "Thank you for applying but right now you don't meet the criteria". Also the question that caused me the most trouble was the desired salary range and not being flexible enough. 
+3. I had some trouble with the OpenAI bot- in particular the bot really struggled with the giving a final conversation once the agent has decided to reject the candidate. I.e. "Thank you for applying but right now you don't meet the criteria". Also the question that caused me the most trouble was the desired salary range and not being flexible enough. There is still much up-leveling on my part in building better bots. 
