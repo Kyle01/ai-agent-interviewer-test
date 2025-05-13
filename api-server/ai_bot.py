@@ -31,6 +31,7 @@ def interviewer_bot(conversation, candidate_profile):
                         "hasTwoYearsExperience": "",
                         "experienceDescription": ""
                     }
+                    You should speak naturally and not like a robot.
                     You should always ask the candidate for their name first.
                     You should reject the application if the candidate is not looking for work.
                     You should reject the application if the desired role is not related to nursing.
@@ -50,7 +51,6 @@ def interviewer_bot(conversation, candidate_profile):
     try:
         match = re.search(r'```json\n(.*?)\n```', resp.choices[0].message.content, re.DOTALL)
         if not match:
-            # If no JSON block found, try to parse the entire response as JSON
             json_string = resp.choices[0].message.content
         else:
             json_string = match.group(1)
