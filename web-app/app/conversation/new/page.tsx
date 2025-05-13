@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Conversation from '@/app/components/conversation';
 import { Message, CandidateProfileStatus } from '@/app/types';
-import { cannedRejectionMessage, cannedAcceptanceMessage } from '@/app/conversation/[id]/page';
+import { cannedRejectionMessage, cannedAcceptanceMessage } from '@/app/constants';
 
 const defaultConversation: Message[] = [{
   role: 'assistant',
