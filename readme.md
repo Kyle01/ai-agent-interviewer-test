@@ -1,6 +1,6 @@
 
 # Project Description
-Text based interview chatbot using LLM to screen candidates and collect information for a possible nursing role. 
+Text based interview chatbot using LLM to screen candidates and collect information for a possible nursing role. The deployed site can be found here: https://ai-agent-interviewer-test.vercel.app/
 
 # Technical Description
 * The frontend is made in NextJS and written in Typescript
