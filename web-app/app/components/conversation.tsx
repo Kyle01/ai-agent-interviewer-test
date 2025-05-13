@@ -35,7 +35,7 @@ export default function Conversation({ messages, isLoading = false }: Conversati
               }`}
             >
               <p className="whitespace-pre-wrap">{message.content}</p>
-             {message.timestamp && <span className="text-xs opacity-70 mt-2 block">
+             {message.timestamp && <span className="text-xs opacity-70 mt-2 block" suppressHydrationWarning>
                 {new Date(message.timestamp).toLocaleTimeString()}
               </span>}
             </div>

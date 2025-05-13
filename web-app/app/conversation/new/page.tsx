@@ -16,14 +16,14 @@ export default function NewConversation() {
   const [conversation, setConversation] = useState<Array<Message>>(defaultConversation);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
-x
+
   const handleSubmitResponse = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
     setIsLoading(true);
     try {
-      const response = await fetch('/api/conversation', {
+      const response = await fetch('/api/conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

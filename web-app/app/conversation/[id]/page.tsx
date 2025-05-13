@@ -54,6 +54,7 @@ export default function ConversationDetail() {
       const data = await response.json();
       console.log(data);
       setMessages(data.messages || []);
+      setNewMessage('');
       setStatus(data.status || CandidateProfileStatus.IN_PROGRESS);
       setCandidateProfile(data.candidateProfile || null);
     } catch (error) {
