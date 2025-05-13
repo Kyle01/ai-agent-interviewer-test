@@ -29,9 +29,7 @@ def get_conversations():
     """
     cur.execute(query)
     results = []
-    print(cur)
     for row in cur:
-        print(row)
         conversation = {
             'id': row[0], 
             'status': row[1], 

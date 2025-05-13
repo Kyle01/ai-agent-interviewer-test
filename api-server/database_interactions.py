@@ -42,7 +42,6 @@ def fetch_candidate_details(conversation_id):
         'hasTwoYearsExperience': conversation[9],
         'experienceDescription': conversation[11],
     }
-    print(f"Profile: {profile}")
 
     messages = conversation[10]  
     return jsonify({
