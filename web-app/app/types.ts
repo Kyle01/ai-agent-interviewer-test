@@ -18,7 +18,7 @@ export interface CandidateProfile {
 }
 
 export enum CandidateProfileStatus {
-    IN_PROGRESS = 'IN_PROGRESS',
-    COMPLETED = 'COMPLETED',
-    REJECTED = 'REJECTED',
+    IN_PROGRESS = 'in_progress',
+    COMPLETED = 'completed',
+    REJECTED = 'rejected',
 }

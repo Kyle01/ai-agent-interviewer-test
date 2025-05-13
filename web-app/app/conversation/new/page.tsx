@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Conversation from '@/app/components/conversation';
-import { Message } from '@/app/types';
+import { Message, CandidateProfileStatus } from '@/app/types';
+import { cannedRejectionMessage, cannedAcceptanceMessage } from '@/app/conversation/[id]/page';
 
 const defaultConversation: Message[] = [{
   role: 'assistant',
@@ -21,6 +22,7 @@ export default function NewConversation() {
     e.preventDefault();
     if (!input.trim()) return;
 
+    setConversation(conversation => [...conversation, ({ content: input, role: 'user' })]);
     setIsLoading(true);
     try {
       const response = await fetch('/api/conversations', {
@@ -36,7 +38,14 @@ export default function NewConversation() {
       }
 
       const data = await response.json();
-      setConversation(data.messages);
+      if (data.status === CandidateProfileStatus.REJECTED) {
+        setConversation(prev => [...prev, ({ content: cannedRejectionMessage, role: 'assistant' })]);
+      } else if (data.status === CandidateProfileStatus.COMPLETED) {
+        setConversation(prev => [...prev, ({ content: cannedAcceptanceMessage, role: 'assistant' })]);
+      } else {
+        setConversation(data.messages || []);
+      }
+      setConversation(data.messages || []);
       setInput('');
       
       router.push(`/conversation/${data.id}`);

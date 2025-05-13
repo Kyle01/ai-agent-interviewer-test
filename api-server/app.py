@@ -29,18 +29,21 @@ def get_conversations():
     """
     cur.execute(query)
     results = []
+    print(cur)
     for row in cur:
+        print(row)
         conversation = {
-            "id": row[0],
-            "name": row[1],
-            "position": row[2],
-            "salary": row[3],
-            "has_agreed_to_upper_salary_range": row[4],
-            "registration_number": row[5],
-            "registration_state": row[6],
-            "expected_registration_date": row[7],
-            "has_two_years_experience": row[8],
-            "experience_description": row[9],
+            'id': row[0], 
+            'status': row[1], 
+            'candidateName': row[2],  
+            'desiredPosition': row[3],
+            'desiredSalary': row[4],
+            'hasAgreedToUpperSalaryRange': row[5],
+            'registrationNumber': row[6],
+            'registrationState': row[7],
+            'expectedRegistrationDate': row[8],
+            'hasTwoYearsExperience': row[9],
+            'experienceDescription': row[11],
         }
         results.append(conversation)
 

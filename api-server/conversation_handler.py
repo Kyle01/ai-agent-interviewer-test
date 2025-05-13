@@ -1,13 +1,8 @@
 from flask import jsonify
-from datetime import datetime, UTC
+from datetime import datetime
 import uuid
-from database_interactions import create_conversation, fetch_candidate_details
-from ai_bots import interviewer_bot
-
-
-# In-memory storage for conversations
-conversations = {}
-
+from database_interactions import create_conversation, fetch_candidate_details, save_conversation
+from ai_bot import interviewer_bot
 
 def handle_conversation(conversation_id=None, request=None):
     data = request.get_json()
@@ -22,7 +17,7 @@ def handle_conversation(conversation_id=None, request=None):
         'id': str(uuid.uuid4()),
         'content': data['content'],
         'role': 'user',
-        'timestamp': datetime.utcnow().isoformat()
+        'timestamp': datetime.now().isoformat(),
     }
 
     # If no conversation_id provided, create new conversation
@@ -46,15 +41,18 @@ def handle_conversation(conversation_id=None, request=None):
     ai_message = {
         'role': 'assistant',
         'content': ai_response.get("next_question"),
-        'timestamp': datetime.utcnow().isoformat(),
+        'timestamp': datetime.now().isoformat(),
     }
 
-    
+    appended_conversation = [*conversation, ai_message]
+    updated_candidate_profile = ai_response.get("candidate_profile")
+
+    save_conversation(conversation_id, updated_candidate_profile.get("candidateName"), updated_candidate_profile.get("desiredPosition"), updated_candidate_profile.get("desiredSalary"), updated_candidate_profile.get("hasAgreedToUpperSalaryRange"), updated_candidate_profile.get("registrationNumber"), updated_candidate_profile.get("registrationState"), updated_candidate_profile.get("expectedRegistrationDate"), updated_candidate_profile.get("hasTwoYearsExperience"), updated_candidate_profile.get("experienceDescription"), ai_response.get("status"), appended_conversation)
 
     return jsonify({
         'id': conversation_id,
-        'messages': [*conversation, ai_message],
-        'candidate_profile': ai_response.get("candidate_profile"),
+        'messages': appended_conversation,
+        'candidate_profile': updated_candidate_profile,
         'status': ai_response.get("status"),
     })
 
@@ -62,7 +60,7 @@ def handle_new_conversation(new_message):
     initial_message = {
         'content': 'Hello! How can I help you today?',
         'role': 'assistant',
-        'timestamp': datetime.now(UTC).isoformat()
+        'timestamp': datetime.now().isoformat()
     }
 
     current_conversation = [initial_message, new_message]
@@ -71,7 +69,7 @@ def handle_new_conversation(new_message):
     next_question = {
         'content': bot_resp.get("next_question"),
         'role': 'assistant',
-        'timestamp': datetime.now(UTC).isoformat()
+        'timestamp': datetime.now().isoformat()
     }
     candidate_profile = bot_resp.get("candidate_profile")
     status = bot_resp.get("status")

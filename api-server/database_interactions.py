@@ -29,7 +29,7 @@ def fetch_candidate_details(conversation_id):
     
     if not conversation:
         return None
-        
+    
     profile = {
         'id': conversation[0],  
         'candidateName': conversation[2],  
@@ -66,15 +66,15 @@ def create_conversation(messages, name, position, salary, has_agreed_to_upper_sa
     conn.close()
     return id
 
-def save_conversation(conversation_id, name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status):
+def save_conversation(conversation_id, name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status, messages):
     conn = get_db_connection()
     cur = conn.cursor()
     query = """
         UPDATE candidate_applications
-        SET candidate_name = %s, desired_position = %s, desired_salary = %s, has_agreed_to_upper_salary_range = %s, registration_number = %s, registration_state = %s, expected_registration_date = %s, has_two_years_experience = %s, experience_description = %s, status = %s
+        SET candidate_name = %s, desired_position = %s, desired_salary = %s, has_agreed_to_upper_salary_range = %s, registration_number = %s, registration_state = %s, expected_registration_date = %s, has_two_years_experience = %s, experience_description = %s, status = %s, conversation = %s
         WHERE id = %s
     """
-    cur.execute(query, (name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status, conversation_id))
+    cur.execute(query, (name, position, salary, has_agreed_to_upper_salary_range, registration_number, registration_state, expected_registration_date, has_two_years_experience, experience_description, status, json.dumps(messages), conversation_id))
     conn.commit()
     cur.close()
     conn.close()
