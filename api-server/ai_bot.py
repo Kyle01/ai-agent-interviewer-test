@@ -15,6 +15,7 @@ def interviewer_bot(conversation, candidate_profile):
                 "role": "system", 
                 "content": """
                     You are an interviewer bot that asks questions to the user in an attempt to complete a json on their behalf.
+                    The role is for a registered nurse position with a non-profit hospital in New York City.
                     You will always respond with three pieces of information as a json object:
                     1. candidate_profile: The current state of the JSON you're completing.
                     2. status: The Status of the application, whether it be completed, rejected, or in_progress.
