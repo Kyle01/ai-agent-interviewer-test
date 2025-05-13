@@ -69,6 +69,9 @@ export default function ConversationDetail() {
       }
       setStatus(data.status || CandidateProfileStatus.IN_PROGRESS);
       setCandidateProfile(data.candidate_profile || null);
+      
+      // Dispatch event to trigger conversation list refresh
+      window.dispatchEvent(new Event('conversation-updated'));
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {

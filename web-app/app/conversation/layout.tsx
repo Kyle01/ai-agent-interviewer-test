@@ -31,6 +31,17 @@ export default function ConversationLayout({
     };
 
     fetchConversations();
+
+    // Add event listener for conversation updates
+    const handleConversationUpdate = () => {
+      fetchConversations();
+    };
+
+    window.addEventListener('conversation-updated', handleConversationUpdate);
+
+    return () => {
+      window.removeEventListener('conversation-updated', handleConversationUpdate);
+    };
   }, [pathname]);
   
   return (
